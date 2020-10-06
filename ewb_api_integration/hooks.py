@@ -143,3 +143,12 @@ app_license = "MIT"
 #
 # auto_cancel_exempted_doctypes = ["Auto Repeat"]
 
+doctype_js = {
+    "Sales Invoice" : "public/js/sales_invoice.js",
+}
+
+doc_events = {
+	"Sales Invoice": {
+		"on_cancel": "ewb_api_integration.ewb_api_integration.gsp.adaequare.cancel_ewb"
+	}
+}
