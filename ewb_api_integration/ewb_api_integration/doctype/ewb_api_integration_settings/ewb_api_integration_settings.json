@@ -9,32 +9,15 @@
   "staging",
   "section_break_2",
   "api_key",
-  "username",
-  "column_break_5",
   "api_secret",
-  "password"
+  "gstin_credential_mapping"
  ],
  "fields": [
   {
    "fieldname": "gsp",
    "fieldtype": "Select",
-   "label": "Select GSP"
-  },
-  {
-   "depends_on": "eval:doc.gsp=='Adaequare'",
-   "fieldname": "username",
-   "fieldtype": "Data",
-   "label": "Username"
-  },
-  {
-   "depends_on": "eval:doc.gsp=='Adaequare'",
-   "fieldname": "password",
-   "fieldtype": "Data",
-   "label": "Password"
-  },
-  {
-   "fieldname": "column_break_5",
-   "fieldtype": "Column Break"
+   "label": "Select GSP",
+   "options": "\nAdaequare"
   },
   {
    "fieldname": "api_key",
@@ -56,12 +39,18 @@
    "fieldname": "staging",
    "fieldtype": "Check",
    "label": "Staging"
+  },
+  {
+   "fieldname": "gstin_credential_mapping",
+   "fieldtype": "Table",
+   "label": "GSTIN Credential Mapping",
+   "options": "GSTIN Credential Mapping"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2020-10-05 14:19:46.128882",
+ "modified": "2020-10-06 13:47:47.292605",
  "modified_by": "Administrator",
  "module": "Ewb Api Integration",
  "name": "EWB API Integration Settings",
