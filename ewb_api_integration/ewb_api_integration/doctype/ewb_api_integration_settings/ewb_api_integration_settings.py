@@ -114,3 +114,4 @@ def get_config_data(gstin):
 				'username': row.username,
 				'password': row.password,
 				'env': api_config_doc.staging}
+	frappe.throw(_(f'Kindly update the selected company GSTIN EWB API credentials'))
