@@ -9,7 +9,7 @@ frappe.ui.form.on('Sales Invoice', {
 						primary_action(values) {
 								additional_details.hide();
 								frappe.call({
-									method: 'ewb_api_integration.ewb_api_integration.doctype.ewb_api_integration_settings.ewb_api_integration_settings.generate_eway_bill',
+									method: 'ewb_api_integration.ewb_api_integration.gsp.gsp.generate_eway_bill',
 									freeze: true,
 									args: {
 										'dt': frm.doc.doctype,
