@@ -11,7 +11,7 @@ import json
 import random, string
 from frappe import _
 from frappe.utils import cint
-from ewb_api_integration.ewb_api_integration.doctype.ewb_api_integration_settings.ewb_api_integration_settings import calculate_amounts, get_config_data
+from ewb_api_integration.ewb_api_integration.doctype.ewb_api_integration_settings.ewb_api_integration_settings import get_config_data
 
 url_dict = {'base_url': 'https://gsp.adaequare.com',
 			'authenticate_url': '/gsp/authenticate?grant_type=token',
@@ -24,9 +24,8 @@ url_dict = {'base_url': 'https://gsp.adaequare.com',
 			'staging_get_ewb_url': '/test/enriched/ewb/ewayapi/GetEwayBill',
 			'live_get_ewb_url': '/enriched/ewb/ewayapi/GetEwayBill'}
 
-def generate_ewb(ewb, dt, dn):
+def generate_ewb(ewb):
 	data = make_supporting_request_data(ewb['billLists'][0])
-	data.update(calculate_amounts(dt, dn))
 	config_data = get_config_data(data['userGstin'])
 	url = url_dict['base_url'] + url_dict['live_generate_url']
 	if cint(config_data['env']):
@@ -52,13 +51,8 @@ def generate_ewb(ewb, dt, dn):
 	response = request("POST", url, headers=headers, data=payload)
 	response_json = json.loads(response.text.encode('utf8'))
 	if response_json['success']:
-		dn = json.loads(dn)
-		sinv_doc = frappe.get_doc(dt, dn[0])
-		sinv_doc.ewaybill = response_json['result']['ewayBillNo']
-		sinv_doc.save()
-		frappe.msgprint(_(response_json['message']))
-	else:
-		frappe.throw(response.text, title='ewaybill generation error')
+		return response_json['result']['ewayBillNo'], response_json['result']['ewayBillDate'], response_json['result']['validUpto']
+	frappe.throw(response.text, title='ewaybill generation error')
 
 def cancel_ewb(doc):
 	config_data = get_config_data(doc.company_gstin)
@@ -81,9 +75,8 @@ def cancel_ewb(doc):
 	response = request("POST", url, headers=headers, data=payload)
 	response_json = json.loads(response.text.encode('utf8'))
 	if response_json['success']:
-		frappe.msgprint(_(response_json['message']))
-	else:
-		frappe.throw(response.text, title='ewaybill cancellation error')
+		return True
+	frappe.throw(response.text, title='ewaybill cancellation error')
 
 def update_transporter(doc):
 	config_data = get_config_data(doc.company_gstin)
@@ -107,9 +100,8 @@ def update_transporter(doc):
 	response = request("POST", url, headers=headers, data=payload)
 	response_json = json.loads(response.text.encode('utf8'))
 	if response_json['success']:
-		frappe.msgprint(_(response_json['message']))
-	else:
-		frappe.throw(response.text, title='Transporter update error')
+		return True
+	frappe.throw(response.text, title='Transporter update error')
 
 def get_ewb(doc):
 	config_data = get_config_data(doc.company_gstin)
