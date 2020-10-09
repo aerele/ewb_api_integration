@@ -143,3 +143,17 @@ app_license = "MIT"
 #
 # auto_cancel_exempted_doctypes = ["Auto Repeat"]
 
+doctype_js = {
+    "Sales Invoice" : "public/js/sales_invoice.js",
+}
+
+doc_events = {
+	"Sales Invoice": {
+		"validate": "ewb_api_integration.ewb_api_integration.doctype.ewb_api_integration_settings.ewb_api_integration_settings.set_field_values",
+		"on_update_after_submit": "ewb_api_integration.ewb_api_integration.gsp.gsp.update_transporter",
+		"on_cancel": "ewb_api_integration.ewb_api_integration.gsp.gsp.cancel_eway_bill",
+		"before_update_after_submit": "ewb_api_integration.ewb_api_integration.doctype.ewb_api_integration_settings.ewb_api_integration_settings.set_ewaybill_barcode"
+	}
+}
+
+after_install = "ewb_api_integration.ewb_api_integration.doctype.ewb_api_integration_settings.ewb_api_integration_settings.make_custom_field"
