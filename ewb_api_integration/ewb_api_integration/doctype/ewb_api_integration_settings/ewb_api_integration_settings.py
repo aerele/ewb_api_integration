@@ -33,17 +33,18 @@ def make_custom_field():
 	custom_fields = {
 		'Sales Invoice': [
 			dict(fieldname='ewaybill_barcode', label='E- Way Bill',
-			fieldtype='Code', allow_on_submit= 1, read_only= 1, hidden= 1 ),
+			fieldtype='Code', allow_on_submit= 1, read_only= 1, hidden= 1),
 			dict(fieldname='ewaybill_date', label='E- Way Bill Date',
-			fieldtype='Data', insert_after='ewaybill', read_only= 1, allow_on_submit= 1, depends_on= 'eval:(doc.docstatus === 1)'),
+			fieldtype='Datetime', insert_after='ewaybill', read_only= 1, allow_on_submit= 1),
 			dict(fieldname='ewaybill_validity', label='E- Way Bill Validity',
-			fieldtype='Data', insert_after='ewaybill_date', read_only= 1, allow_on_submit= 1, depends_on= 'eval:(doc.docstatus === 1)')
+			fieldtype='Datetime', insert_after='ewaybill_date', read_only= 1, allow_on_submit= 1)
 		]
 	}
 	create_custom_fields(custom_fields, update=True)
 
 # Calculation might be client specific. Will not work if the item specific taxes included.
 def calculate_amounts(dt, dn):
+	#TODO: redo this with and get tax rate from internal function and taxable from the below method.
 	hsn_list = []
 	total_list = {}
 	hsn_taxable_amount_list = {}
@@ -103,15 +104,15 @@ def calculate_amounts(dt, dn):
 	for hsn in hsn_list:
 		item = {
 			'hsnCode': hsn,
-			'cgstRate': hsn_taxable_amount_list[hsn]*cgst_rate[0]/100,
-			'sgstRate': hsn_taxable_amount_list[hsn]*sgst_rate[0]/100,
-			'igstRate': hsn_taxable_amount_list[hsn]*igst_rate[0]/100,
-			'taxableAmount': hsn_taxable_amount_list[hsn]
+			'cgstRate': round(cgst_rate[0], 2),
+			'sgstRate': round(sgst_rate[0], 2),
+			'igstRate': round(igst_rate[0], 2),
+			'taxableAmount': round(hsn_taxable_amount_list[hsn], 2)
 		}
 		itemList.append(item)
 
 	return {
-		'totInvValue': sinv_doc.grand_total,
+		'totInvValue': total_taxable_amount['amount'] + sum(cgst_amount) + sum(sgst_amount) + sum(igst_amount),
 		'totalValue': total_taxable_amount['amount'],
 		'cgstValue': sum(cgst_amount),
 		'sgstValue': sum(sgst_amount),

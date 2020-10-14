@@ -25,13 +25,14 @@ url_dict = {'base_url': 'https://gsp.adaequare.com',
 			'live_get_ewb_url': '/enriched/ewb/ewayapi/GetEwayBill'}
 
 def generate_ewb(ewb):
-	data = make_supporting_request_data(ewb['billLists'][0])
+	data = make_supporting_request_data(ewb)
 	config_data = get_config_data(data['userGstin'])
+	# TODO: put this in a common fn
 	url = url_dict['base_url'] + url_dict['live_generate_url']
 	if cint(config_data['env']):
 		url = url_dict['base_url'] + url_dict['staging_generate_url']
 
-	if 'transporterId' in data:
+	if 'transporterId' in data and data['transporterId']:
 		if 'transDocNo' in data:
 			del data['transDocNo']
 		if 'transMode' in data:
@@ -55,6 +56,7 @@ def generate_ewb(ewb):
 	frappe.throw(response.text, title='ewaybill generation error')
 
 def cancel_ewb(doc):
+	# TODO: remove doc dependency from this file
 	config_data = get_config_data(doc.company_gstin)
 	url = url_dict['base_url'] + url_dict['live_cancel_url']
 	if cint(config_data['env']):
@@ -79,6 +81,7 @@ def cancel_ewb(doc):
 	frappe.throw(response.text, title='ewaybill cancellation error')
 
 def update_transporter(doc):
+	# TODO: remove doc dependency from this file
 	config_data = get_config_data(doc.company_gstin)
 	url = url_dict['base_url'] + url_dict['live_update_transporter_url']
 	if cint(config_data['env']):
@@ -104,6 +107,7 @@ def update_transporter(doc):
 	frappe.throw(response.text, title='Transporter update error')
 
 def get_ewb(doc):
+	# TODO: remove doc dependency from this file
 	config_data = get_config_data(doc.company_gstin)
 	url = url_dict['base_url'] + url_dict['live_get_ewb_url']
 	if cint(config_data['env']):
@@ -121,6 +125,7 @@ def get_ewb(doc):
 	params ={'ewbNo': doc.ewaybill}
 	response = request("GET", url, headers=headers, params= params)
 	response_json = json.loads(response.text.encode('utf8'))
+	# TODO: either rename this or a seperate function to check transport_id may be not in this file... "get_ewb" function should only get the ewb
 	if response_json['success']:
 		if response_json['result']['transporterId'] == doc.gst_transporter_id:
 			return False
@@ -129,6 +134,7 @@ def get_ewb(doc):
 		frappe.throw(response.text, title='Get eWaybill error')
 
 def make_supporting_request_data(ewb):
+	# TODO: check if this is common for all gsp's 
 	mapping_keys = {'actualFromStateCode':'actFromStateCode', 'actualToStateCode':'actToStateCode', 'transType':'transactionType'}
 	for key in mapping_keys:
 		if key in ewb:

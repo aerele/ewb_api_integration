@@ -10,7 +10,7 @@ import json
 from frappe import _
 from erpnext.regional.india.utils import generate_ewb_json
 from ewb_api_integration.ewb_api_integration.doctype.ewb_api_integration_settings.ewb_api_integration_settings import calculate_amounts
-
+from datetime import datetime
 
 
 gsp_file_dict = {'Adaequare': 'adaequare'}
@@ -21,15 +21,15 @@ gsp = importlib.import_module(module_name)
 
 @frappe.whitelist()
 def generate_eway_bill(dt, dn, additional_val):
-	ewb = generate_ewb_json(dt, dn)
+	ewb = generate_ewb_json(dt, dn)['billLists'][0]
 	ewb.update(calculate_amounts(dt, dn))
 	ewb_no, ewb_date, validity = gsp.generate_ewb(ewb)
 	dn = json.loads(dn)
 	sinv_doc = frappe.get_doc(dt, dn[0])
 	sinv_doc.ewaybill = ewb_no
-	sinv_doc.ewaybill_date = ewb_date
+	sinv_doc.ewaybill_date = datetime.strptime(ewb_date, '%d/%m/%Y %H:%M:%S PM')
 	if validity:
-		sinv_doc.ewaybill_validity = validity
+		sinv_doc.ewaybill_validity = datetime.strptime(validity, '%d/%m/%Y %H:%M:%S PM')
 	sinv_doc.save()
 	frappe.msgprint(_('E-way bill generated successfully'))
 
@@ -41,7 +41,7 @@ def cancel_eway_bill(doc, action):
 
 def update_transporter(doc, action):
 	if action == "on_update_after_submit":
-		if doc.ewaybill and doc.gst_transporter_id:
+		if doc.ewaybill:
 			if gsp.get_ewb(doc):
 				if gsp.update_transporter(doc):
 					frappe.msgprint(_('Transporter updated Successfully'))
