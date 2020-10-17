@@ -112,12 +112,12 @@ def calculate_amounts(dt, dn):
 		itemList.append(item)
 
 	return {
-		'totInvValue': total_taxable_amount['amount'] + sum(cgst_amount) + sum(sgst_amount) + sum(igst_amount),
+		'totInvValue': sinv_doc.grand_total,
 		'totalValue': total_taxable_amount['amount'],
 		'cgstValue': sum(cgst_amount),
 		'sgstValue': sum(sgst_amount),
 		'igstValue': sum(igst_amount),
-		'OthValue': 0,
+		'OthValue': sinv_doc.grand_total - (total_taxable_amount['amount'] + sum(cgst_amount) + sum(sgst_amount) + sum(igst_amount)),
 		'itemList': itemList
 	}
 

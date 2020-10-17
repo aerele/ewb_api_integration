@@ -135,7 +135,8 @@ def get_ewb(doc):
 
 def make_supporting_request_data(ewb):
 	# TODO: check if this is common for all gsp's 
-	mapping_keys = {'actualFromStateCode':'actFromStateCode', 'actualToStateCode':'actToStateCode', 'transType':'transactionType'}
+	# Note: so far all these changes are due to diff in ewb upload json and ewb api json formats
+	mapping_keys = {'actualFromStateCode':'actFromStateCode', 'actualToStateCode':'actToStateCode', 'transType':'transactionType', 'OthValue':'otherValue'}
 	for key in mapping_keys:
 		if key in ewb:
 			ewb[mapping_keys[key]] = ewb[key]
