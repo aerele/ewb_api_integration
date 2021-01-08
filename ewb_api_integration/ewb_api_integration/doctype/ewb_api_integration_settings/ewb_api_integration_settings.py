@@ -15,7 +15,7 @@ class EWBAPIIntegrationSettings(Document):
 	pass
 
 def set_field_values(doc, action):
-	if action == 'validate' and not doc.docstatus:
+	if action == 'before_insert':
 		doc.ewaybill = None
 		doc.ewaybill_barcode = None
 		doc.ewaybill_date = None
@@ -33,11 +33,11 @@ def make_custom_field():
 	custom_fields = {
 		'Sales Invoice': [
 			dict(fieldname='ewaybill_barcode', label='E- Way Bill',
-			fieldtype='Code', allow_on_submit= 1, read_only= 1, hidden= 1),
+			fieldtype='Code', allow_on_submit= 1, read_only= 1, hidden= 1, no_copy=1),
 			dict(fieldname='ewaybill_date', label='E- Way Bill Date',
-			fieldtype='Datetime', insert_after='ewaybill', read_only= 1, allow_on_submit= 1),
+			fieldtype='Datetime', insert_after='ewaybill', read_only= 1, allow_on_submit= 1, no_copy=1),
 			dict(fieldname='ewaybill_validity', label='E- Way Bill Validity',
-			fieldtype='Datetime', insert_after='ewaybill_date', read_only= 1, allow_on_submit= 1)
+			fieldtype='Datetime', insert_after='ewaybill_date', read_only= 1, allow_on_submit= 1, no_copy=1)
 		]
 	}
 	create_custom_fields(custom_fields, update=True)
