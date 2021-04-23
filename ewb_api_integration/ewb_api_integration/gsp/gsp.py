@@ -33,6 +33,13 @@ def generate_eway_bill(dt, dn, additional_val):
 	sinv_doc.save()
 	frappe.msgprint(_('E-way bill generated successfully'))
 
+@frappe.whitelist()
+def cancel_eway_bill_by_user(doctype, docname):
+	doc = frappe.get_doc(doctype, docname)
+	if gsp.cancel_ewb(doc):
+		frappe.msgprint(_('E-way bill cancelled successfully'))
+
+
 def cancel_eway_bill(doc, action):
 	if action == "on_cancel":
 		if doc.ewaybill:
