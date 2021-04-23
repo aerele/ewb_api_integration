@@ -34,7 +34,7 @@ frappe.ui.form.on('Sales Invoice', {
 		if (frm.doc.ewaybill && !frm.doc.eway_bill_cancelled) {
 			const action = () => {
 				let additional_details = new frappe.ui.Dialog({
-					title: 'Are you sure you want to generate?',
+					title: 'Are you sure you want to Cancel?',
 					primary_action_label: 'Cancel E-Way Bill',
 					primary_action() {
 							additional_details.hide();
@@ -43,7 +43,7 @@ frappe.ui.form.on('Sales Invoice', {
 								freeze: true,
 								args: {
 									'doctype': frm.doc.doctype,
-									'docname': [frm.doc.name]
+									'docname': frm.doc.name
 								},
 								callback: function(r) {
 									if (r.message) {
@@ -57,7 +57,7 @@ frappe.ui.form.on('Sales Invoice', {
 
 			additional_details.show();
 			};
-			add_custom_button(__("Cancel E-Way Bill - EWB API"), action);
+			frm.add_custom_button(__("Cancel E-Way Bill - EWB API"), action, __('E-Way Bill'));
 		}
 }
 });
