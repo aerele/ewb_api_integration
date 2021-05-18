@@ -11,6 +11,7 @@ from frappe import _
 from erpnext.regional.india.utils import generate_ewb_json
 from ewb_api_integration.ewb_api_integration.doctype.ewb_api_integration_settings.ewb_api_integration_settings import calculate_amounts
 from datetime import datetime
+from frappe.core.doctype.version.version import get_diff
 
 
 gsp_file_dict = {'Adaequare': 'adaequare'}
@@ -46,9 +47,19 @@ def cancel_eway_bill(doc, action):
 			if gsp.cancel_ewb(doc):
 				frappe.msgprint(_('E-way bill cancelled successfully'))
 
-def update_transporter(doc, action):
+def update_transporter(new_doc, action):
 	if action == "on_update_after_submit":
-		if doc.ewaybill:
-			if gsp.get_ewb(doc):
-				if gsp.update_transporter(doc):
+		is_gst_transporter_id_changed = False
+		old_doc = new_doc.get_doc_before_save()
+		diff = get_diff(old_doc, new_doc)
+		
+		for changed in diff.changed:
+			field, old, new = changed
+			if field == 'gst_transporter_id' and not old == new:
+				is_gst_transporter_id_changed = True
+				break
+
+		if new_doc.ewaybill and new_doc.gst_transporter_id and is_gst_transporter_id_changed:
+			if gsp.get_ewb(new_doc):
+				if gsp.update_transporter(new_doc):
 					frappe.msgprint(_('Transporter updated Successfully'))
