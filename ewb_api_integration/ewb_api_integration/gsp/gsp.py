@@ -44,7 +44,7 @@ def cancel_eway_bill_by_user(doctype, docname):
 		doc.flags.updater_reference = {
 			'doctype': doc.doctype,
 			'docname': doc.name,
-			'label': _('E-Way Bill Cancelled - {}').format(remark)
+			'label': _('E-Way Bill Cancelled')
 		}
 		doc.flags.ignore_validate_update_after_submit = True
 		doc.flags.ignore_validate = True
