@@ -38,6 +38,17 @@ def generate_eway_bill(dt, dn, additional_val):
 def cancel_eway_bill_by_user(doctype, docname):
 	doc = frappe.get_doc(doctype, docname)
 	if gsp.cancel_ewb(doc):
+		doc.ewaybill = ''
+		doc.ewaybill_barcode = None
+		doc.eway_bill_cancelled = 1
+		doc.flags.updater_reference = {
+			'doctype': doc.doctype,
+			'docname': doc.name,
+			'label': _('E-Way Bill Cancelled - {}').format(remark)
+		}
+		doc.flags.ignore_validate_update_after_submit = True
+		doc.flags.ignore_validate = True
+		doc.save()
 		frappe.msgprint(_('E-way bill cancelled successfully'))
 
 
