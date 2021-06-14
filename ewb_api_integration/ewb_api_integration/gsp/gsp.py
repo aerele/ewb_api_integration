@@ -31,6 +31,8 @@ def generate_eway_bill(dt, dn, additional_val):
 	sinv_doc.ewaybill_date = datetime.strptime(ewb_date, '%d/%m/%Y %I:%M:%S %p')
 	if validity:
 		sinv_doc.ewaybill_validity = datetime.strptime(validity, '%d/%m/%Y %I:%M:%S %p')
+	if hasattr(sinv_doc, 'eway_bill_cancelled'):
+		sinv_doc.eway_bill_cancelled = 0
 	sinv_doc.save()
 	frappe.msgprint(_('E-way bill generated successfully'))
 
