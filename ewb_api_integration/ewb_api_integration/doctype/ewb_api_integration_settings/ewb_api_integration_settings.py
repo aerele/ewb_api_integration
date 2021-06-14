@@ -22,7 +22,7 @@ def set_field_values(doc, action):
 		doc.ewaybill_validity = None
 
 def set_ewaybill_barcode(doc, action):
-	if action == "before_update_after_submit":
+	if action in ["before_update_after_submit", "before_submit"]:
 		if doc.ewaybill:
 			code = barcode.Code128(str(doc.ewaybill))
 			display_code = f'{str(doc.ewaybill)[0:4]} {str(doc.ewaybill)[4:8]} {str(doc.ewaybill)[8:12]}'

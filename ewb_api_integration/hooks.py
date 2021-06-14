@@ -152,7 +152,8 @@ doc_events = {
 		"before_insert": "ewb_api_integration.ewb_api_integration.doctype.ewb_api_integration_settings.ewb_api_integration_settings.set_field_values",
 		"on_update_after_submit": "ewb_api_integration.ewb_api_integration.gsp.gsp.update_transporter",
 		"on_cancel": "ewb_api_integration.ewb_api_integration.gsp.gsp.cancel_eway_bill",
-		"before_update_after_submit": "ewb_api_integration.ewb_api_integration.doctype.ewb_api_integration_settings.ewb_api_integration_settings.set_ewaybill_barcode"
+		"before_update_after_submit": "ewb_api_integration.ewb_api_integration.doctype.ewb_api_integration_settings.ewb_api_integration_settings.set_ewaybill_barcode",
+		"before_submit": "ewb_api_integration.ewb_api_integration.doctype.ewb_api_integration_settings.ewb_api_integration_settings.set_ewaybill_barcode"
 	}
 }
 
