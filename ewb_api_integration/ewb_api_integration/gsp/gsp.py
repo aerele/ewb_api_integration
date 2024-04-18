@@ -8,7 +8,7 @@ from frappe.model.document import Document
 import importlib
 import json
 from frappe import _
-from erpnext.regional.india.utils import generate_ewb_json
+# from erpnext.regional.india.utils import generate_ewb_json
 from ewb_api_integration.ewb_api_integration.doctype.ewb_api_integration_settings.ewb_api_integration_settings import calculate_amounts
 from datetime import datetime
 from frappe.core.doctype.version.version import get_diff
@@ -22,7 +22,8 @@ gsp = importlib.import_module(module_name)
 
 @frappe.whitelist()
 def generate_eway_bill(dt, dn, additional_val):
-	ewb = generate_ewb_json(dt, dn)['billLists'][0]
+	# ewb = generate_ewb_json(dt, dn)['billLists'][0]
+	ewb = None
 	ewb.update(calculate_amounts(dt, dn))
 	ewb_no, ewb_date, validity = gsp.generate_ewb(ewb)
 	dn = json.loads(dn)

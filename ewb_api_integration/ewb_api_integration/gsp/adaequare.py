@@ -5,7 +5,7 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
-from erpnext.regional.india.utils import generate_ewb_json
+# from erpnext.regional.india.utils import generate_ewb_json
 from requests import request
 import json
 import random, string

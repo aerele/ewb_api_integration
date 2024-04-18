@@ -9,7 +9,8 @@ from frappe.model.document import Document
 import barcode
 from frappe import _
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
-from erpnext.regional.india.utils import get_gst_accounts, get_itemised_tax_breakup_data
+# from erpnext.regional.india.utils import get_gst_accounts, get_itemised_tax_breakup_data
+from india_compliance.gst_india.constants import (GST_ACCOUNT_FIELDS)
 
 class EWBAPIIntegrationSettings(Document):
 	pass
@@ -60,7 +61,7 @@ def calculate_amounts(dt, dn):
 	itemList = []
 	dn = json.loads(dn)
 	sinv_doc = frappe.get_doc(dt, dn[0])
-	gst_account_heads = get_gst_accounts(sinv_doc.company, True)
+	gst_account_heads = get_gst_accounts(sinv_doc.company)
 	for row in sinv_doc.items:
 		if row.gst_hsn_code not in hsn_list:
 			hsn_list.append(row.gst_hsn_code)
@@ -132,3 +133,25 @@ def get_config_data(gstin):
 				'password': row.password,
 				'env': api_config_doc.staging}
 	frappe.throw(_(f'Kindly update the selected company GSTIN EWB API credentials'))
+
+@frappe.whitelist()
+def get_gst_accounts(company):
+    """
+    Permission not checked here:
+    List of GST account names isn't considered sensitive data
+    """
+    if not company:
+        frappe.throw(_("Please set Company first"))
+
+    settings = frappe.get_cached_doc("GST Settings")
+
+    accounts_list = {}
+    for row in settings.gst_accounts:
+        if row.company != company:
+            continue
+
+        for account in GST_ACCOUNT_FIELDS:
+            if gst_account := row.get(account):
+                accounts_list[gst_account] = account
+
+    return accounts_list
