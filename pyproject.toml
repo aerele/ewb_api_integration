@@ -1,0 +1,17 @@
+[project]
+name = "ewb_api_integration"
+authors = [
+    { name = "Aerele", email = "admin@aerele.in"}
+]
+description = "Implementation of Eway Bill API Integration for India"
+requires-python = ">=3.10"
+readme = "README.md"
+dynamic = ["version"]
+dependencies = [
+    # "frappe~=15.0.0" # Installed and managed by bench.
+    "python-barcode=0.15.1",
+]
+
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
